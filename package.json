@@ -1,0 +1,32 @@
+{
+  "name": "temple",
+  "version": "1.0.0",
+  "description": "temple vazhippade operation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vpprasu/temple.git"
+  },
+  "keywords": [
+    "temple",
+    "vazhippad"
+  ],
+  "author": "Prasobh Chandran V V",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vpprasu/temple/issues"
+  },
+  "homepage": "https://github.com/vpprasu/temple#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
+    "mysql2": "^2.2.5",
+    "sequelize": "^6.3.5"
+  }
+}

@@ -1,0 +1,6 @@
+export const LIST_USER_VAZHIPPAD = "LIST_USER_VAZHIPPAD";
+export const LIST_VAZHIPPAD = "LIST_VAZHIPPAD";
+export const LIST_FAMILYINFO = "LIST_FAMILYINFO";
+
+export const GET_USER = "GET_USER";
+export const SET_USER = "SET_USER";
