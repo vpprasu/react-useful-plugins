@@ -27,8 +27,8 @@ class ServerAgGrid {
         const selectSql = this.createSelectSql(request);
         const fromSql = ' FROM sample_data.olympic_winners ';
         const whereSql = this.createWhereSql(request);
-        const limitSql = this.createLimitSql(request);
-
+        // const limitSql = this.createLimitSql(request);
+        const limitSql = "";
         const orderBySql = this.createOrderBySql(request);
         const groupBySql = this.createGroupBySql(request);
 
@@ -66,6 +66,8 @@ class ServerAgGrid {
                 return this.createTextFilterSql(key, item);
             case 'number':
                 return this.createNumberFilterSql(key, item);
+            case 'set':
+                return this.createSetFilterSql(key, item);
             default:
                 console.log('unkonwn filter type: ' + item.filterType);
         }
@@ -111,6 +113,12 @@ class ServerAgGrid {
                 console.log('unknown text filter type: ' + item.type);
                 return 'true';
         }
+    }
+
+    createSetFilterSql(key, item) {
+        if(item.values.length)
+            return key + ' in ("' + item.values.join('","') + '")';
+        else return 'true';
     }
 
     createWhereSql(request) {

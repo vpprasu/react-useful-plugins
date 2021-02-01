@@ -1,5 +1,5 @@
-import React from 'react'
-import { FormControl, FormLabel, FormGroup, FormControlLabel,Input,InputLabel,TextField,RadioGroup,Radio,Checkbox, Select, MenuItem, Slider, Switch, Grid, Button, ListItemText} from '@material-ui/core'
+import React,{useEffect, useState} from 'react'
+import { FormControl, FormLabel, FormGroup, FormControlLabel,Input,InputLabel,TextField,RadioGroup,Radio,Checkbox, Select, MenuItem, Slider, Switch, Grid, Button, ListItemText, Typography, CircularProgress} from '@material-ui/core'
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
@@ -8,43 +8,104 @@ import {
 } from '@material-ui/pickers'
 import {Autocomplete} from "@material-ui/lab";
 import { useForm, Controller } from 'react-hook-form';
+import axiosInstance from '../../axiosConfig'
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
+const schema = Yup.object().shape({
+    firstName : Yup.string().required()
+})
 export default function MuiReactHookForm() {
-    const {handleSubmit, register, errors, watch, control, reset} = useForm(
+    const [formData, setFormData] = useState({})
+    const [defaulltValues, setDefaulltValues] = useState({
+        firstName : "",
+        age : '',
+        gender : '',
+        primary : false,
+        dob : "",
+        publishedDate : "",
+        temperature : [],
+        acceptTerms : false,
+        updatedDate : null,
+        country : {},
+        hobbies : [],
+        hobbies2 : []})
+    const {handleSubmit, register, unregister, errors, watch, control, reset, setError, clearErrors, getValues, setValue, trigger, formState: { isSubmitSuccessful, isDirty,touched,isSubmitting,isSubmitted }} = useForm(
         {
-            defaultValues : 
-            {
-                firstName : "Prasobh",
-                age : 10,
-                gender : 'male',
-                primary : true,
-                dob : "2017-05-24",
-                publishedDate : "2017-05-24T13:30",
-                temperature : [2,5],
-                updatedDate : "01/28/2020",
-                country : { code: "AD", label: "Andorra", phone: "376" },
-                hobbies : [],
-                hobbies2 : [30]
-            }
+            defaultValues : defaulltValues,
+            resolver : yupResolver(schema)
         }
     )
     const onSubmit = (data) => {
-
-        console.log(`Data submitted....`)
+        setTimeout(() => {
+        setError("firstName",{ type : "custom", message : "custom error message"})
+        console.log(`**************Data submitted**************`)
         console.log(data)
+        reset(defaulltValues);
+        
+        console.log(`**************Reset**************`)
+        }, 3000);
+
+        
     }
     const hobbies = [
         {title : "Sports", value : 10},
         {title : "Reading", value : 20},
         {title : "Spirituality", value : 30}
     ]
+    console.log(`***********Errors*************`)
+    console.log(errors)
+    console.log(`***********Errors*************`)
+    useEffect(() => {
+        async function initialLoad() {
+            const allData = await axiosInstance.post("/serverAgGrid/getData",{})
+            reset(
+                {
+                    firstName : "",
+                    age : 10,
+                    gender : 'male',
+                    primary : true,
+                    dob : "2017-05-24",
+                    publishedDate : "2017-05-24T13:30",
+                    temperature : [2,5],
+                    acceptTerms : true,
+                    updatedDate : "01/28/2020",
+                    country : { code: "AD", label: "Andorra", phone: "376" },
+                    hobbies : [30],
+                    hobbies2 : [20]
+                }
+            );
+            // register("lastName")
+        }
+        initialLoad();
+    }, [])
+  
+
+    const watchPrimary = watch('primary');
+    console.log(`************isDirty*************`)
+    console.log(isDirty)
+    console.log(`************touched*************`)
+    console.log(touched)
+    console.log(`************isSubmitting*************`)
+    console.log(isSubmitting)
+    console.log(`************isSubmitSuccessful*************`)
+    console.log(isSubmitSuccessful)
+    console.log(`************isSubmitted*************`)
+    console.log(isSubmitted)
     return (
         <form onSubmit={ handleSubmit(onSubmit)}>
             <Grid container spacing={3}>
                 <Grid item xs={12}>
                     <Controller name="firstName" control={control} 
                     as = {
-                        <TextField name="firstName" label="First Name" variant="outlined" />
+                        <TextField name="firstName2" label="First Name" variant="outlined"  helperText={errors.firstName && errors.firstName.message} error={errors.firstName && true} />
                     } />
+                    
+                </Grid>
+                <Grid item xs={12}>
+                    <FormControl component="fieldset">
+                        <FormLabel component="legend">Last Name</FormLabel>
+                        <input type="text" name="lastName"  ref={register}/>
+                    </FormControl>
                 </Grid>
                 <Grid item xs={12}>
                 <FormControl component="fieldset">
@@ -110,6 +171,7 @@ export default function MuiReactHookForm() {
                             }
                             } // props contains: onChange, onBlur and value
                         />
+                        {watchPrimary && <Typography variant="h7"><i>Im clicked on primary theme</i></Typography>}
                         <Controller
                             name="uncontrolled"
                             control={control}
@@ -298,7 +360,6 @@ export default function MuiReactHookForm() {
                                     });
                                     return arr.join(', ')
                                  }}
-
                                 >
                                 {hobbies.map(obj => (
                                     <MenuItem value={obj.value}>
@@ -310,15 +371,26 @@ export default function MuiReactHookForm() {
                     </FormControl>
                 </Grid>
                 <Grid item xs={12}>
-                    <Button variant="contained" color="primary" type="submit">
-                    Submit
+                    <Button variant="contained" color="primary" type="submit" disabled={!isDirty}>
+                    Submit and Set Error { isSubmitted && <CircularProgress color="secondary" size={20} />}
                     </Button>
-                    <Button variant="contained" color="secondary" onClick={() => reset()}>
+                    <Button variant="contained" color="secondary" onClick={() => reset(defaulltValues)}>
                     Reset
                     </Button>
+                    <Button variant="contained" color="primary" onClick={() => register("lastName")}>Register</Button>
+                    <Button variant="contained" color="secondary" onClick={() => unregister("lastName")}>Unregister</Button>
+                </Grid>
+                <Grid item xs={12}>
+                    <Button variant="contained" color="primary" onClick={() => clearErrors()}>Clear Errors</Button>
+                    <Button variant="contained" color="secondary" onClick={() =>{ console.log("*********Set  Value**********"); setValue('lastName','Chandran')}}>
+                    Set Value
+                    </Button>
+                    <Button variant="contained" color="primary" onClick={() =>{ console.log("*********Get Values**********"); console.log(getValues())}}>Get Values</Button>
+                    <Button variant="contained" color="secondary" onClick={() =>{ console.log("*********Get Values**********"); trigger()}}>Trigger All Validation</Button>
                 </Grid>
             </Grid>
         </form>
 
     )
 }
+

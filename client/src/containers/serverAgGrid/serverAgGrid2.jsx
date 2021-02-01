@@ -2,6 +2,13 @@ import React, { Component } from 'react';
 import { render } from 'react-dom';
 import { AgGridReact } from '@ag-grid-community/react';
 import { AllCommunityModules } from '@ag-grid-community/all-modules';
+import { ServerSideRowModelModule } from '@ag-grid-enterprise/server-side-row-model';
+import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
+import { MultiFilterModule } from '@ag-grid-enterprise/multi-filter';
+import { SetFilterModule } from '@ag-grid-enterprise/set-filter';
+import { MenuModule } from '@ag-grid-enterprise/menu';
+import { ClipboardModule } from '@ag-grid-enterprise/clipboard';
+import { FiltersToolPanelModule } from '@ag-grid-enterprise/filter-tool-panel';
 import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-community/all-modules/dist/styles/ag-theme-alpine.css';
 
@@ -10,7 +17,14 @@ class ServerAgGrid2 extends Component {
     super(props);
 
     this.state = {
-      modules: AllCommunityModules,
+      modules: [
+        ClientSideRowModelModule,
+        MultiFilterModule,
+        SetFilterModule,
+        MenuModule,
+        ClipboardModule,
+        FiltersToolPanelModule,
+      ],
       columnDefs: [
         {
           headerName: 'Athlete',
@@ -19,6 +33,7 @@ class ServerAgGrid2 extends Component {
         {
           headerName: 'Sport',
           field: 'sport',
+          filter: "agMultiColumnFilter"
         },
         {
           headerName: 'Age',
