@@ -11,6 +11,7 @@ import UseMemoHook from './containers/useMemo/useMemoHook'
 import UseCallbackHook from './containers/useCallback/useCallbackHook'
 import MuiReactHookForm from './containers/muiReactHookForm/muiReactHookForm'
 import MuiGrid from './containers/muiGrid/muiGrid'
+import MultiFileUpload from './containers/multiFileUpload/multiFileUpload'
 function App() {
   return (
     <div className="App">
@@ -120,6 +121,16 @@ function App() {
           <Jumbotron>
             <h1>MUI Grid Example</h1>
             <MuiGrid></MuiGrid>
+            </Jumbotron>
+          </Col>
+        </Row>
+      </Container>
+      <Container>
+        <Row>
+          <Col>
+          <Jumbotron>
+            <h1>Multi-File Upload</h1>
+            <MultiFileUpload></MultiFileUpload>
             </Jumbotron>
           </Col>
         </Row>
